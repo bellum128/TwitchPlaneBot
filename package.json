@@ -9,6 +9,7 @@
   "author": "bellum128",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "tmi.js": "^1.8.5"
   }
 }

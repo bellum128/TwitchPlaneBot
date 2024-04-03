@@ -1,8 +1,16 @@
 {
     "expandRadiusMiles": 2.5,
+    "chatChannels": ["ChannelName"],
+    "twitchAPI": {
+        "botUsername": "BotName",
+        "clientId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "debug": false
+    },
     "relayAPI": {
         "host": "http://example.com",
-        "port": 18209
+        "port": 18209,
+        "endpoint": "/location"
     },
     "flightAPI": {
         "host": "http://example.com",
