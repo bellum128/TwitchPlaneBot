@@ -1,6 +1,9 @@
 # Config
 config.json
 
+# VS Code Workspaces
+*.code-workspace
+
 # Logs
 logs
 *.log

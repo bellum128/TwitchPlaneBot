@@ -9,8 +9,7 @@ fetch(`${config.relayAPI.host}:${config.relayAPI.port}/location`).then(data => {
     console.log(`Location data: ${JSON.stringify(data)}`);
 
     const params = new URLSearchParams();
-    if(data.latitude && data.longitude)
-    {
+    if(data.latitude && data.longitude) {
         console.log("Calling Flight Display API service.");
         params.append("north_lat", data.latitude);
         params.append("west_long", data.longitude);
@@ -25,5 +24,8 @@ fetch(`${config.relayAPI.host}:${config.relayAPI.port}/location`).then(data => {
         }).then((data) => {
             console.log(data);
         });
+    }
+    else {
+        console.log("Location could not be retreived at this time.");
     }
 });
