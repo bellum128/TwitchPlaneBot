@@ -1,0 +1,11 @@
+{
+    "expandRadiusMiles": 2.5,
+    "relayAPI": {
+        "host": "http://example.com",
+        "port": 18209
+    },
+    "flightAPI": {
+        "host": "http://example.com",
+        "port": 6129
+    }
+}
