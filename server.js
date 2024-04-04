@@ -23,27 +23,27 @@ client.on("message", (channel, tags, message, self) => {
     if (message.toLowerCase().trim().startsWith("!plane")) {
         (async () => {
             const data = await getFlightData();
-            if(data && data.flights)
-            {
+
+            if (data && data.flights) {
                 if (data.flights.length > 0) {
                     let nearestFlight = data.flights[0];
                     console.log("Nearest flight: ", nearestFlight);
-    
+
                     // We will always have distance.
                     function getDistanceText() {
                         return ` It is ${nearestFlight.distanceToCenter.toFixed(1)} miles away!`
                     }
-    
+
                     function getModelText() {
                         if (nearestFlight.model != "") {
                             function isVowel(str) {
-                                return (str.startsWith("a") || str.startsWith("e") || str.startsWith("i") || str.startsWith("o") || str.startsWith("o"));
+                                return (str.toLowerCase().startsWith("a") || str.toLowerCase().startsWith("e") || str.toLowerCase().startsWith("i") || str.toLowerCase().startsWith("o") || str.toLowerCase().startsWith("o"));
                             }
-    
+
                             return ` is ${isVowel(nearestFlight.model) ? "an" : "a"} ${nearestFlight.model}`;
                         }
                     }
-    
+
                     function getCallsignOrFlightText() {
                         if (nearestFlight.callsign != "") {
                             return ` flight ${nearestFlight.callsign}`
@@ -55,32 +55,33 @@ client.on("message", (channel, tags, message, self) => {
                             return "";
                         }
                     }
-    
+
                     function getCountryNameFromISO(isoCountry) {
                         let countrySet = regionData[isoCountry];
-    
+
                         if (!countrySet)
-                            return iso;
-    
+                            return isoCountry;
+
                         return countrySet["name"];
                     }
-    
+
                     function getRegionNameFromISO(isoCountry, isoRegion) {
                         let countrySet = regionData[isoCountry];
                         let region = countrySet.divisions[isoRegion];
-    
+
                         return region;
                     }
-    
+
                     function getOriginText() {
                         if (nearestFlight.origin != "") {
                             let airport = airportData.filter(a => a.iata_code == nearestFlight.origin)[0];
                             console.log("airport", airport);
+
                             if (!airport)
                                 return ` from ${nearestFlight.origin}`
                             else {
                                 // Replace US with state, as a primarily American audience is more familiar with this nomenclature.
-                                if (airport.iso_country == "US") { 
+                                if (airport.iso_country == "US") {
                                     return ` from ${airport.municipality}, ${getRegionNameFromISO(airport.iso_country, airport.iso_region)}`
                                 }
                                 else {
@@ -92,21 +93,29 @@ client.on("message", (channel, tags, message, self) => {
                             return "";
                         }
                     }
-    
+
                     function getDestinationText() {
                         if (nearestFlight.destination != "") {
                             let airport = airportData.filter(a => a.iata_code == nearestFlight.destination)[0];
                             console.log("airport", airport);
+
                             if (!airport)
                                 return ` to ${nearestFlight.destination}`
-                            else
-                                return ` to ${airport.municipality}, ${getCountryNameFromISO(airport.iso_country)}`
+                            else {
+                                // Replace US with state, as a primarily American audience is more familiar with this nomenclature.
+                                if (airport.iso_country == "US") {
+                                    return ` to ${airport.municipality}, ${getRegionNameFromISO(airport.iso_country, airport.iso_region)}`
+                                }
+                                else {
+                                    return ` to ${airport.municipality}, ${getCountryNameFromISO(airport.iso_country)}`
+                                }
+                            }
                         }
                         else {
                             return "";
                         }
                     }
-    
+
                     client.say(channel, `The nearest plane${getModelText()},${getCallsignOrFlightText()}${getOriginText()}${getDestinationText()}.${getDistanceText()}`);
                 }
                 else {
@@ -125,7 +134,14 @@ async function getFlightData() {
         const locationResponse = await fetch(`${config.relayAPI.host}:${config.relayAPI.port}${config.relayAPI.endpoint}`);
         const locationData = await locationResponse.json();
 
-        console.log(`Location data: ${JSON.stringify(locationData)}`);
+        console.log(`Location data:`, locationData);
+
+        if (Date.now() - locationData.reportedAt > 300000) // 5 Minute Stale Timeout
+        {
+            console.log("Location data is stale.");
+            return null;
+        }
+
         if (locationData.latitude && locationData.longitude) {
             const params = new URLSearchParams();
 
