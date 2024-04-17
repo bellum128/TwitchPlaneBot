@@ -21,21 +21,21 @@ client.connect().catch(console.error);
 client.on("message", (channel, tags, message, self) => {
     if (self) return;
     if (message.toLowerCase().trim().startsWith("!plane")) {
-        (async () => {
+        (async() => {
             const data = await getFlightData();
 
             if (data && data.flights) {
                 if (data.flights.length > 0) {
-                    let nearestFlight = data.flights[0];
+                    const nearestFlight = data.flights[0];
                     console.log("Nearest flight: ", nearestFlight);
 
                     // We will always have distance.
                     function getDistanceText() {
-                        return ` It is ${nearestFlight.distanceToCenter.toFixed(1)} miles away!`
+                        return ` It is ${nearestFlight.distanceToCenter.toFixed(1)} miles away!`;
                     }
 
                     function getModelText() {
-                        if (nearestFlight.model != "") {
+                        if (nearestFlight.model !== "") {
                             function isVowel(str) {
                                 return (str.toLowerCase().startsWith("a") || str.toLowerCase().startsWith("e") || str.toLowerCase().startsWith("i") || str.toLowerCase().startsWith("o") || str.toLowerCase().startsWith("o"));
                             }
@@ -45,11 +45,11 @@ client.on("message", (channel, tags, message, self) => {
                     }
 
                     function getCallsignOrFlightText() {
-                        if (nearestFlight.callsign != "") {
-                            return ` flight ${nearestFlight.callsign}`
+                        if (nearestFlight.callsign !== "") {
+                            return ` flight ${nearestFlight.callsign}`;
                         }
-                        else if (nearestFlight.flight != "") {
-                            return ` flight ${nearestFlight.flight}`
+                        else if (nearestFlight.flight !== "") {
+                            return ` flight ${nearestFlight.flight}`;
                         }
                         else {
                             return "";
@@ -57,35 +57,37 @@ client.on("message", (channel, tags, message, self) => {
                     }
 
                     function getCountryNameFromISO(isoCountry) {
-                        let countrySet = regionData[isoCountry];
+                        const countrySet = regionData[isoCountry];
 
-                        if (!countrySet)
+                        if (!countrySet) {
                             return isoCountry;
+                        }
 
-                        return countrySet["name"];
+                        return countrySet.name;
                     }
 
                     function getRegionNameFromISO(isoCountry, isoRegion) {
-                        let countrySet = regionData[isoCountry];
-                        let region = countrySet.divisions[isoRegion];
+                        const countrySet = regionData[isoCountry];
+                        const region = countrySet.divisions[isoRegion];
 
                         return region;
                     }
 
                     function getOriginText() {
-                        if (nearestFlight.origin != "") {
-                            let airport = airportData.filter(a => a.iata_code == nearestFlight.origin)[0];
+                        if (nearestFlight.origin !== "") {
+                            const airport = airportData.filter(a => a.iata_code === nearestFlight.origin)[0];
                             console.log("airport", airport);
 
-                            if (!airport)
-                                return ` from ${nearestFlight.origin}`
+                            if (!airport) {
+                                return ` from ${nearestFlight.origin}`;
+                            }
                             else {
                                 // Replace US with state, as a primarily American audience is more familiar with this nomenclature.
-                                if (airport.iso_country == "US") {
-                                    return ` from ${airport.municipality}, ${getRegionNameFromISO(airport.iso_country, airport.iso_region)}`
+                                if (airport.iso_country === "US") {
+                                    return ` from ${airport.municipality}, ${getRegionNameFromISO(airport.iso_country, airport.iso_region)}`;
                                 }
                                 else {
-                                    return ` from ${airport.municipality}, ${getCountryNameFromISO(airport.iso_country)}`
+                                    return ` from ${airport.municipality}, ${getCountryNameFromISO(airport.iso_country)}`;
                                 }
                             }
                         }
@@ -95,19 +97,20 @@ client.on("message", (channel, tags, message, self) => {
                     }
 
                     function getDestinationText() {
-                        if (nearestFlight.destination != "") {
-                            let airport = airportData.filter(a => a.iata_code == nearestFlight.destination)[0];
+                        if (nearestFlight.destination !== "") {
+                            const airport = airportData.filter(a => a.iata_code === nearestFlight.destination)[0];
                             console.log("airport", airport);
 
-                            if (!airport)
-                                return ` to ${nearestFlight.destination}`
+                            if (!airport) {
+                                return ` to ${nearestFlight.destination}`;
+                            }
                             else {
                                 // Replace US with state, as a primarily American audience is more familiar with this nomenclature.
-                                if (airport.iso_country == "US") {
-                                    return ` to ${airport.municipality}, ${getRegionNameFromISO(airport.iso_country, airport.iso_region)}`
+                                if (airport.iso_country === "US") {
+                                    return ` to ${airport.municipality}, ${getRegionNameFromISO(airport.iso_country, airport.iso_region)}`;
                                 }
                                 else {
-                                    return ` to ${airport.municipality}, ${getCountryNameFromISO(airport.iso_country)}`
+                                    return ` to ${airport.municipality}, ${getCountryNameFromISO(airport.iso_country)}`;
                                 }
                             }
                         }
@@ -123,7 +126,7 @@ client.on("message", (channel, tags, message, self) => {
                 }
             }
             else {
-                client.say(channel, `Could not retreive the streamer's location.`);
+                client.say(channel, "Could not retreive the streamer's location.");
             }
         })();
     }
@@ -134,10 +137,9 @@ async function getFlightData() {
         const locationResponse = await fetch(`${config.relayAPI.host}:${config.relayAPI.port}${config.relayAPI.endpoint}`);
         const locationData = await locationResponse.json();
 
-        console.log(`Location data:`, locationData);
+        console.log("Location data:", locationData);
 
-        if (Date.now() - locationData.reportedAt > (config.stalenessTimeoutMinutes * 60 * 1000))
-        {
+        if (Date.now() - locationData.reportedAt > (config.stalenessTimeoutMinutes * 60 * 1000)) {
             console.log("Location data is stale.");
             return null;
         }
