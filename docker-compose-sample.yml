@@ -1,0 +1,31 @@
+services:
+  rtirlapirelay:
+    build:
+      context: /project/RTIRLAPIRelay/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "18209:18209"
+
+  flightproximityapi:
+    build:
+      context: /project/FlightProximityAPI/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "6129:6129"
+
+  twitchplanebot:
+    build:
+      context: /project/TwitchPlaneBot/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  webnet:
