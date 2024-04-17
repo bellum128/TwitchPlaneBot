@@ -136,7 +136,7 @@ async function getFlightData() {
 
         console.log(`Location data:`, locationData);
 
-        if (Date.now() - locationData.reportedAt > 300000) // 5 Minute Stale Timeout
+        if (Date.now() - locationData.reportedAt > (config.stalenessTimeoutMinutes * 60 * 1000))
         {
             console.log("Location data is stale.");
             return null;

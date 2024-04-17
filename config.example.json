@@ -1,5 +1,6 @@
 {
     "expandRadiusMiles": 2.5,
+    "stalenessTimeoutMinutes": 15,
     "chatChannels": ["ChannelName"],
     "twitchAPI": {
         "botUsername": "BotName",
