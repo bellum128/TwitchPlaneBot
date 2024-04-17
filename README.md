@@ -6,10 +6,10 @@ A Twitch chatbot that retreives info about a nearest airplane, using a streamers
 
 ### Dependencies
 ##### Compatible Flight Data APIs
-bellum128/FlightProximityAPI
+[bellum128/FlightProximityAPI](https://github.com/bellum128/FlightProximityAPI)
 
 ##### Compatible Location Relays
-bellum128/RTIRLAPIRelay
+[bellum128/RTIRLAPIRelay](https://github.com/bellum128/RTIRLAPIRelay)
 
 ### Chat Usage
 `!plane`: Request the bot to print the nearest plane to the streamer set in the RTIRLAPIRelay config.
