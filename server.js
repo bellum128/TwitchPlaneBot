@@ -37,7 +37,7 @@ client.on("message", (channel, tags, message, self) => {
                     function getModelText() {
                         if (nearestFlight.model !== "") {
                             function isVowel(str) {
-                                return (str.toLowerCase().startsWith("a") || str.toLowerCase().startsWith("e") || str.toLowerCase().startsWith("i") || str.toLowerCase().startsWith("o") || str.toLowerCase().startsWith("o"));
+                                return (str.toLowerCase().startsWith("a") || str.toLowerCase().startsWith("e") || str.toLowerCase().startsWith("i") || str.toLowerCase().startsWith("o") || str.toLowerCase().startsWith("u"));
                             }
 
                             return ` is ${isVowel(nearestFlight.model) ? "an" : "a"} ${nearestFlight.model}`;
